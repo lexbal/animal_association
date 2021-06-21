@@ -4,8 +4,8 @@
 namespace App\Controller;
 
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
@@ -15,10 +15,11 @@ class HomeController extends AbstractController
      *     "/home",
      *     name="home"
      * )
-     * @return Response
+     * @Template("index.html.twig")
+     * @return array
      */
     public function home()
     {
-        return new Response("test");
+        return [];
     }
 }
