@@ -1,0 +1,15 @@
+button {
+    margin: 10px;
+}
+
+/* ------ Bootstrap override ------ */
+
+.container {
+    margin-top: 5rem!important;
+}
+
+.form-control {
+    margin: 10px;
+}
+
+/* ------ Bootstrap override ------ */

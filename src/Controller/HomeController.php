@@ -12,7 +12,7 @@ class HomeController extends AbstractController
 {
     /**
      * @Route(
-     *     "/home",
+     *     "/",
      *     name="home"
      * )
      * @Template("index.html.twig")
