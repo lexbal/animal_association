@@ -8,11 +8,15 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Class HomeController
+ * @package App\Controller
+ */
 class HomeController extends AbstractController
 {
     /**
      * @Route(
-     *     "/home",
+     *     "/",
      *     name="home"
      * )
      * @Template("index.html.twig")
