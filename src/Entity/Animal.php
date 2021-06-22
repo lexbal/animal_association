@@ -211,12 +211,12 @@ class Animal
         return $this;
     }
 
-    public function getAdoptedAt(): ?\DateTimeInterface
+    public function getAdoptedAt(): ?DateTimeInterface
     {
         return $this->adopted_at;
     }
 
-    public function setAdoptedAt(?\DateTimeInterface $adopted_at): self
+    public function setAdoptedAt(?DateTimeInterface $adopted_at): self
     {
         $this->adopted_at = $adopted_at;
 
