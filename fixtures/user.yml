@@ -4,7 +4,6 @@ App\Entity\User:
     email: "admin@admin.com"
     roles: "[ROLE_USER,ROLE_ADMIN]"
 
-  user2:
+  user{2..20}:
+    email: '<email()>'
     password: "<passwordGenerator(azerty123456)>"
-    email: "user@user.com"
-    roles: "[ROLE_USER]"

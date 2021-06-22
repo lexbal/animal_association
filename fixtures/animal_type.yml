@@ -1,0 +1,3 @@
+App\Entity\AnimalType:
+  animal_type{1..10}:
+    name: "<realText(250)>"
