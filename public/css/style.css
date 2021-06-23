@@ -1,3 +1,10 @@
+html, body {
+    top: 0;
+    margin: 0;
+    padding: 0;
+    background-color: rgba(0,0,0,.08);
+}
+
 button.btn {
     margin: 10px;
 }
@@ -5,11 +12,27 @@ button.btn {
 /* ------ Bootstrap override ------ */
 
 .container {
-    margin-top: 5rem!important;
+    padding-top: 5rem!important;
 }
 
 .form-control {
     margin: 10px;
+}
+
+.card {
+    margin: 5px;
+}
+
+.list-group-item, .card-header {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.list-group-item:hover, .card-header:hover {
+    overflow: initial;
+    text-overflow: initial;
+    white-space: initial;
 }
 
 /* ------ Bootstrap override ------ */

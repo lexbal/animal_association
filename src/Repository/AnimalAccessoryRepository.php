@@ -19,6 +19,17 @@ class AnimalAccessoryRepository extends ServiceEntityRepository
         parent::__construct($registry, AnimalAccessory::class);
     }
 
+    /**
+     * @return mixed
+     */
+    public function findByAvailableAccessory()
+    {
+        return $this->createQueryBuilder('aa')
+                    ->where('aa.quantity > 0')
+                    ->setMaxResults(8)
+                    ->getQuery()->getResult();
+    }
+
     // /**
     //  * @return AnimalAccessory[] Returns an array of AnimalAccessory objects
     //  */
