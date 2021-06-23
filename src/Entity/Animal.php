@@ -57,19 +57,31 @@ class Animal
     private $price;
 
     /**
+     * @var string
+     *
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $breed;
 
     /**
+     * @var bool
+     *
      * @ORM\Column(type="boolean")
      */
-    private $adopted;
+    private $adopted = false;
 
     /**
+     * @var DateTime
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $adopted_at;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=AnimalType::class, inversedBy="animals")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $type;
 
 
     /**
@@ -199,14 +211,26 @@ class Animal
         return $this;
     }
 
-    public function getAdoptedAt(): ?\DateTimeInterface
+    public function getAdoptedAt(): ?DateTimeInterface
     {
         return $this->adopted_at;
     }
 
-    public function setAdoptedAt(?\DateTimeInterface $adopted_at): self
+    public function setAdoptedAt(?DateTimeInterface $adopted_at): self
     {
         $this->adopted_at = $adopted_at;
+
+        return $this;
+    }
+
+    public function getType(): ?AnimalType
+    {
+        return $this->type;
+    }
+
+    public function setType(?AnimalType $type): self
+    {
+        $this->type = $type;
 
         return $this;
     }

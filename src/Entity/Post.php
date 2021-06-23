@@ -106,10 +106,10 @@ class Post
     }
 
     /**
-     * @param DateTimeImmutable $published_at
+     * @param DateTime $published_at
      * @return $this
      */
-    public function setPublishedAt(DateTimeImmutable $published_at): self
+    public function setPublishedAt(DateTime $published_at): self
     {
         $this->published_at = $published_at;
 

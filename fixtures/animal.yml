@@ -1,0 +1,20 @@
+App\Entity\Animal:
+  animal{1..50}:
+    name: "<realText(50)>"
+    type: "@animal_type<numberBetween(1, 10)>"
+    birth_date: '<dateTimeBetween("-15 years", "now")>'
+    height: '<numberBetween(1, 1000)>'
+    weight: '<numberBetween(1, 1000)>'
+    price: '<numberBetween(1, 1000)>'
+    breed: '<realText(50)>'
+    adopted: true
+    adopted_at: '<dateTimeBetween("-10 years", "now")>'
+
+  animal{51..100}:
+    name: "<realText(50)>"
+    type: "@animal_type<numberBetween(1, 10)>"
+    birth_date: '<dateTimeBetween("-15 years", "now")>'
+    height: '<numberBetween(1, 1000)>'
+    weight: '<numberBetween(1, 1000)>'
+    price: '<numberBetween(1, 1000)>'
+    breed: '<realText(50)>'

@@ -1,0 +1,6 @@
+App\Entity\Post:
+  post{1..30}:
+    title: "<realText(250)>"
+    description: "<sentence(15)>"
+    published_at: '<dateTimeBetween("-200 days", "now")>'
+    author: "@user<numberBetween(1, 10)>"
