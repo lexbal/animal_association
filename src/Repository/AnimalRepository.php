@@ -19,6 +19,18 @@ class AnimalRepository extends ServiceEntityRepository
         parent::__construct($registry, Animal::class);
     }
 
+    /**
+     * @return mixed
+     */
+    public function findByEightAnimalNotAdopted()
+    {
+        return $this->createQueryBuilder('a')
+                    ->andWhere('a.adopted = 0')
+                    ->andWhere("a.adopted_at IS NULL")
+                    ->setMaxResults(8)
+                    ->getQuery()->getResult();
+    }
+
     // /**
     //  * @return Animal[] Returns an array of Animal objects
     //  */

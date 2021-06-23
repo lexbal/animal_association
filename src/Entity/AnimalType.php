@@ -75,6 +75,10 @@ class AnimalType
         return $this->animals;
     }
 
+    /**
+     * @param Animal $animal
+     * @return $this
+     */
     public function addAnimal(Animal $animal): self
     {
         if (!$this->animals->contains($animal)) {
@@ -85,6 +89,10 @@ class AnimalType
         return $this;
     }
 
+    /**
+     * @param Animal $animal
+     * @return $this
+     */
     public function removeAnimal(Animal $animal): self
     {
         if ($this->animals->removeElement($animal)) {
@@ -95,5 +103,13 @@ class AnimalType
         }
 
         return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function __toString()
+    {
+        return $this->getName();
     }
 }
