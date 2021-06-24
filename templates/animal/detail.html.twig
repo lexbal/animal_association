@@ -3,5 +3,28 @@
 {% block title %}Animal Detail{% endblock %}
 
 {% block body %}
+<div class="row">
+        <div class="col-md-12 col-lg-12 col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    {{ animal.name }}
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            {{ animal.breed }} 
+                        </li>
+                        <li class="list-group-item">
+                        height : {{ animal.height}}<br>
+                        weight : {{ animal.weight}}<br>
+                        price : {{ animal.price}}<br>
+                        birthday : {{ animal.getBirthDate|date("m/d/Y", false) }}<br>
+                        age : {{"now"|date("Y")-animal.getBirthDate|date("Y", false)}}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}

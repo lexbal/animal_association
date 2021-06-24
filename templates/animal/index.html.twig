@@ -3,5 +3,30 @@
 {% block title %}Animal{% endblock %}
 
 {% block body %}
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <h3>animal :</h3>
+        </div>
+    </div>
+        <div class="row">
+        {% for animal in animaux %}
+            <div class="col-md-3 col-lg-3 col-sm-6">
+                <div class="card">
+                    <div class="card-header">
+                        {{ animal.name }}
+                    </div>
+                    <div class="card-body">
+                        {{ animal.breed }}
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ path('animal_detail', {'id' : animal.id|nzo_encrypt}) }}" class="btn btn-primary">
+                            More info
+                        </a>
+                    </div>
+                    
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 
 {% endblock %}

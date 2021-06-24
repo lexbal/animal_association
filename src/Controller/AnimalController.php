@@ -6,6 +6,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Repository\AnimalRepository;
+use App\Entity\Animal;
+use App\Entity\User;
+use Nzo\UrlEncryptorBundle\Annotations\ParamDecryptor;
+use Nzo\UrlEncryptorBundle\Encryptor\Encryptor;
 
 
 /**
@@ -22,24 +27,35 @@ class AnimalController extends AbstractController
      */
     public function index(): array
     {
-        // Récuperation de tout les animaux depuis la BDD
-        // Récuperation des tout les animaux adoptées les mois dernier depuis la BDD
+        $em          = $this->getDoctrine()->getManager();
+        /** @var AnimalRepository $repo */
+        $repo        = $em->getRepository(Animal::class);
+        $animaux = $repo->findBy(["adopted" => 0, "adopted_at" => null]);
 
-        // Doit retourné les 2 array precedant
-        return [];
+        return compact('animaux');
+        // return [];
     }
 
     /**
-     * @Route("/{id}", name="animal_detail")
+     * @Route("/detail/{id}", name="animal_detail")
      * @Template("animal/detail.html.twig")
+     * @ParamDecryptor(params={"id"})
      * @param int $id
      * @return array
      */
     public function detail(int $id): array
     {
-        // Récuperation de l'animal depuis la BDD grace a l'id en parametre de fonction
+        $em        = $this->getDoctrine()->getManager();
+        /** @var AnimalRepository $repo */
+        $repo      = $em->getRepository(Animal::class);
 
-        // Doit retourné l'entity Animal de l'id en parametre
-        return [];
+        if (!$animal = $repo->find($id)) {
+            throw new NotFoundHttpException("animal not found !");
+        }
+
+        return compact('animal');
     }
+
+
+
 }
