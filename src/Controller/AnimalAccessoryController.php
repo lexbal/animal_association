@@ -2,10 +2,18 @@
 
 namespace App\Controller;
 
+use App\Entity\AnimalAccessory;
+use App\Entity\User;
+use App\Repository\AnimalAccessoryRepository;
+use Nzo\UrlEncryptorBundle\Encryptor\Encryptor;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 
 /**
@@ -15,6 +23,13 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class AnimalAccessoryController extends AbstractController
 {
+    private $encryptor;
+
+    public function __construct(Encryptor $encryptor)
+    {
+        $this->encryptor = $encryptor;
+    }
+
     /**
      * @Route("/", name="animal_accessory")
      * @Template("animal_accessory/index.html.twig")
@@ -29,7 +44,7 @@ class AnimalAccessoryController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="animal_accessory_detail")
+     * @Route("/detail/{id}", name="animal_accessory_detail")
      * @Template("animal_accessory/detail.html.twig")
      * @param int $id
      * @return array
@@ -43,22 +58,45 @@ class AnimalAccessoryController extends AbstractController
     }
 
     /**
-     * @Route("/", name="animal_accessory_add_to_cart")
-     * @return array
+     * @Route("/add_to_cart", name="animal_accessory_add_to_cart", methods={"POST"})
+     * @param Request $request
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @return JsonResponse
      */
-    public function addToCart(): array
+    public function addToCart(Request $request): JsonResponse
     {
-        // Sera executé via du AJAX
+        $em   = $this->getDoctrine()->getManager();
+        /** @var AnimalAccessoryRepository $repo */
+        $repo = $em->getRepository(AnimalAccessory::class);
 
-        // Il faudra :
-        // - Ajouter l'accessoire a l'utilisateur
-        // - Bloquer le bouton au non connecté
-        // - Baisser la quantité d'accessoire
-        // etc...
+        /** @var AnimalAccessory $accessory */
+        if (!$accessory = $repo->find($this->encryptor->decrypt(
+            $request->request->get('id')
+        ))) {
+            throw new NotFoundHttpException("Cannot find accessory !");
+        }
 
-        // Certainement return un $this->json(['success' => true, 'message' => '']);
-        // ou $this->json(['success' => false, 'message' => '']); en cas d'erreur
-        // si nous utilisons AJAX
-        return [];
+        /** @var User $user */
+        if (!$user = $this->getUser()) {
+            throw new AccessDeniedException("Access Denied !");
+        }
+
+        if (($quantity = $accessory->getQuantity()) > 0) {
+            $accessory->setQuantity(
+                - 1
+            );
+
+            $user->addAnimalAccessory($accessory);
+
+            $em->persist($user);
+            $em->persist($accessory);
+        }
+
+        $em->flush();
+
+        return $this->json([
+            'success' => true,
+            'cart'    => count($user->getAnimalAccessories()),
+        ]);
     }
 }

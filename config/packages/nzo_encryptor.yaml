@@ -1,0 +1,3 @@
+nzo_encryptor:
+  secret_key: YourSecretEncryptionKey
+  secret_iv:  YourSecretIv

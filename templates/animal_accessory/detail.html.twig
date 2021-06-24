@@ -3,5 +3,12 @@
 {% block title %}Animal Accessory Detail{% endblock %}
 
 {% block body %}
-
+    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+        <button class="btn btn-primary"
+                id="add-to-cart"
+                data-href="{{ path('animal_accessory_add_to_cart') }}"
+                data-id="{{11|nzo_encrypt}}">
+            Add to cart
+        </button>
+    {% endif %}
 {% endblock %}

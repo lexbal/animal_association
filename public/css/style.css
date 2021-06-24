@@ -5,8 +5,12 @@ html, body {
     background-color: rgba(0,0,0,.08);
 }
 
-button.btn {
+button.btn:not(#cart-btn) {
     margin: 10px;
+}
+
+#cart-btn {
+    margin-right: 10px;
 }
 
 /* ------ Bootstrap override ------ */
