@@ -15,12 +15,12 @@
             </ul>
             <ul class="nav navbar-nav left-nav">
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                    <button type="button" id="cart-btn" class="btn btn-primary position-relative">
+                    <a href="{{ path('animal_accessory_cart') }}" id="cart-btn" class="btn btn-primary position-relative">
                         Cart
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart">
                             {{ app.user.animalAccessories|length }}
                         </span>
-                    </button>
+                    </a>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('logout') }}">Logout</a>
                     </li>

@@ -99,4 +99,22 @@ class AnimalAccessoryController extends AbstractController
             'cart'    => count($user->getAnimalAccessories()),
         ]);
     }
+
+    /**
+     * @Route("/cart", name="animal_accessory_cart")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @Template("cart/index.html.twig")
+     * @return array
+     */
+    public function cart(): array
+    {
+        /** @var User $user */
+        if (!$user = $this->getUser()) {
+            throw new AccessDeniedException("Access Denied !");
+        }
+
+        $accessories = $user->getAnimalAccessories();
+
+        return compact('accessories');
+    }
 }
