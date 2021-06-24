@@ -3,5 +3,38 @@
 {% block title %}Animal Accessory Detail{% endblock %}
 
 {% block body %}
-
+    <div class="row">
+        <div class="col-md-12 col-lg-12 col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    {{ accessory.name }}
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            Quantity : <span class="quantity">{{ accessory.quantity }}</span>
+                        </li>
+                        <li class="list-group-item">
+                            Price : {{ accessory.price }} €
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+        {% if accessory in app.user.animalAccessories %}
+            <div class="alert alert-info" role="alert">
+                This accessory is already in your <a href="{{ path('animal_accessory_cart') }}">cart</a> !
+            </div>
+        {% endif %}
+        <button class="btn btn-primary"
+                id="add-to-cart"
+                data-href="{{ path('animal_accessory_add_to_cart') }}"
+                data-id="{{accessory.id|nzo_encrypt}}"
+                {% if accessory in app.user.animalAccessories %}disabled="disabled"{% endif %}
+        >
+            Add to cart
+        </button>
+    {% endif %}
 {% endblock %}

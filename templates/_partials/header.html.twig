@@ -12,9 +12,18 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('home') }}">Home</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('animal_accessory') }}">Accessories</a>
+                </li>
             </ul>
-            <ul class="nav navbar-nav">
+            <ul class="nav navbar-nav left-nav">
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    <a href="{{ path('animal_accessory_cart') }}" id="cart-btn" class="btn btn-primary position-relative">
+                        Cart
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart">
+                            {{ app.user.animalAccessories|length }}
+                        </span>
+                    </a>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('logout') }}">Logout</a>
                     </li>

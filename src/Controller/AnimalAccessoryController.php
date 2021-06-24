@@ -2,10 +2,19 @@
 
 namespace App\Controller;
 
+use App\Entity\AnimalAccessory;
+use App\Entity\User;
+use App\Repository\AnimalAccessoryRepository;
+use Nzo\UrlEncryptorBundle\Annotations\ParamDecryptor;
+use Nzo\UrlEncryptorBundle\Encryptor\Encryptor;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 
 /**
@@ -15,6 +24,13 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class AnimalAccessoryController extends AbstractController
 {
+    private $encryptor;
+
+    public function __construct(Encryptor $encryptor)
+    {
+        $this->encryptor = $encryptor;
+    }
+
     /**
      * @Route("/", name="animal_accessory")
      * @Template("animal_accessory/index.html.twig")
@@ -22,43 +38,93 @@ class AnimalAccessoryController extends AbstractController
      */
     public function index(): array
     {
-        // Récuperation de tout les accessoires depuis la BDD
+        $em          = $this->getDoctrine()->getManager();
+        /** @var AnimalAccessoryRepository $repo */
+        $repo        = $em->getRepository(AnimalAccessory::class);
+        $accessories = $repo->findAll();
 
-        // Doit retourné l'array precedant
-        return [];
+        return compact('accessories');
     }
 
     /**
-     * @Route("/{id}", name="animal_accessory_detail")
+     * @Route("/detail/{id}", name="animal_accessory_detail")
      * @Template("animal_accessory/detail.html.twig")
+     * @ParamDecryptor(params={"id"})
      * @param int $id
      * @return array
      */
     public function detail(int $id): array
     {
-        // Récuperation de l'accessoire depuis la BDD grâce à l'id en paramètre de fonction
+        $em        = $this->getDoctrine()->getManager();
+        /** @var AnimalAccessoryRepository $repo */
+        $repo      = $em->getRepository(AnimalAccessory::class);
 
-        // Doit retourné l'entity AnimalAccessory de l'id en paramètre
-        return [];
+        if (!$accessory = $repo->find($id)) {
+            throw new NotFoundHttpException("Accessory not found !");
+        }
+
+        return compact('accessory');
     }
 
     /**
-     * @Route("/", name="animal_accessory_add_to_cart")
+     * @Route("/add_to_cart", name="animal_accessory_add_to_cart", methods={"POST"})
+     * @param Request $request
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @return JsonResponse
+     */
+    public function addToCart(Request $request): JsonResponse
+    {
+        $em   = $this->getDoctrine()->getManager();
+        /** @var AnimalAccessoryRepository $repo */
+        $repo = $em->getRepository(AnimalAccessory::class);
+
+        /** @var AnimalAccessory $accessory */
+        if (!$accessory = $repo->find($this->encryptor->decrypt(
+            $request->request->get('id')
+        ))) {
+            throw new NotFoundHttpException("Cannot find accessory !");
+        }
+
+        /** @var User $user */
+        if (!$user = $this->getUser()) {
+            throw new AccessDeniedException("Access Denied !");
+        }
+
+        if (($quantity = $accessory->getQuantity()) > 0 && !$user->getAnimalAccessories()->contains($accessory)) {
+            $accessory->setQuantity(
+                $quantity - 1
+            );
+
+            $user->addAnimalAccessory($accessory);
+
+            $em->persist($user);
+            $em->persist($accessory);
+        }
+
+        $em->flush();
+
+        return $this->json([
+            'success'  => true,
+            'cart'     => count($user->getAnimalAccessories()),
+            'quantity' => $accessory->getQuantity(),
+        ]);
+    }
+
+    /**
+     * @Route("/cart", name="animal_accessory_cart")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @Template("cart/index.html.twig")
      * @return array
      */
-    public function addToCart(): array
+    public function cart(): array
     {
-        // Sera executé via du AJAX
+        /** @var User $user */
+        if (!$user = $this->getUser()) {
+            throw new AccessDeniedException("Access Denied !");
+        }
 
-        // Il faudra :
-        // - Ajouter l'accessoire a l'utilisateur
-        // - Bloquer le bouton au non connecté
-        // - Baisser la quantité d'accessoire
-        // etc...
+        $accessories = $user->getAnimalAccessories();
 
-        // Certainement return un $this->json(['success' => true, 'message' => '']);
-        // ou $this->json(['success' => false, 'message' => '']); en cas d'erreur
-        // si nous utilisons AJAX
-        return [];
+        return compact('accessories');
     }
 }
