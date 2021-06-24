@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\AnimalAccessory;
 use App\Entity\User;
 use App\Repository\AnimalAccessoryRepository;
+use Nzo\UrlEncryptorBundle\Annotations\ParamDecryptor;
 use Nzo\UrlEncryptorBundle\Encryptor\Encryptor;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -37,24 +38,32 @@ class AnimalAccessoryController extends AbstractController
      */
     public function index(): array
     {
-        // Récuperation de tout les accessoires depuis la BDD
+        $em          = $this->getDoctrine()->getManager();
+        /** @var AnimalAccessoryRepository $repo */
+        $repo        = $em->getRepository(AnimalAccessory::class);
+        $accessories = $repo->findAll();
 
-        // Doit retourné l'array precedant
-        return [];
+        return compact('accessories');
     }
 
     /**
      * @Route("/detail/{id}", name="animal_accessory_detail")
      * @Template("animal_accessory/detail.html.twig")
+     * @ParamDecryptor(params={"id"})
      * @param int $id
      * @return array
      */
     public function detail(int $id): array
     {
-        // Récuperation de l'accessoire depuis la BDD grâce à l'id en paramètre de fonction
+        $em        = $this->getDoctrine()->getManager();
+        /** @var AnimalAccessoryRepository $repo */
+        $repo      = $em->getRepository(AnimalAccessory::class);
 
-        // Doit retourné l'entity AnimalAccessory de l'id en paramètre
-        return [];
+        if (!$accessory = $repo->find($id)) {
+            throw new NotFoundHttpException("Accessory not found !");
+        }
+
+        return compact('accessory');
     }
 
     /**
@@ -81,9 +90,9 @@ class AnimalAccessoryController extends AbstractController
             throw new AccessDeniedException("Access Denied !");
         }
 
-        if (($quantity = $accessory->getQuantity()) > 0) {
+        if (($quantity = $accessory->getQuantity()) > 0 && !$user->getAnimalAccessories()->contains($accessory)) {
             $accessory->setQuantity(
-                - 1
+                $quantity - 1
             );
 
             $user->addAnimalAccessory($accessory);
@@ -95,8 +104,9 @@ class AnimalAccessoryController extends AbstractController
         $em->flush();
 
         return $this->json([
-            'success' => true,
-            'cart'    => count($user->getAnimalAccessories()),
+            'success'  => true,
+            'cart'     => count($user->getAnimalAccessories()),
+            'quantity' => $accessory->getQuantity(),
         ]);
     }
 

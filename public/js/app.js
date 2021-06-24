@@ -15,8 +15,11 @@ $(function() {
             processData : false,
         }).then(function(response) {
             if (response.success) {
-                $(".left-nav .cart").empty().append(response.cart + " Cart");
+                $(".left-nav .cart").empty().append(response.cart);
+                $(".card-body .quantity").empty().append(response.quantity);
             }
+
+            _this.attr("disabled", true);
         });
     });
 });

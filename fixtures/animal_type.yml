@@ -1,3 +1,9 @@
 App\Entity\AnimalType:
-  animal_type{1..10}:
-    name: "<realText(250)>"
+  animal_type1:
+    name: 'Dog'
+
+  animal_type2:
+    name: 'Cat'
+
+  animal_type3:
+    name: 'Bird'

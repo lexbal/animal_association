@@ -1,5 +1,15 @@
 App\Entity\AnimalAccessory:
-  animal_accessory{1..25}:
-    name: "<realText(250)>"
+  animal_accessory1:
+    name: 'Food'
     quantity: "<numberBetween(1, 1000)>"
-    price: '<numberBetween(1, 1000)>'
+    price: '<numberBetween(10, 20)>'
+
+  animal_accessory2:
+    name: 'Toy'
+    quantity: "<numberBetween(1, 1000)>"
+    price: '<numberBetween(1, 100)>'
+
+  animal_accessory3:
+    name: 'Harness'
+    quantity: "<numberBetween(1, 1000)>"
+    price: '<numberBetween(20, 50)>'
