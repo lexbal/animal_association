@@ -4,3 +4,9 @@ App\Entity\Post:
     description: "<sentence(15)>"
     published_at: '<dateTimeBetween("-200 days", "now")>'
     author: "@user<numberBetween(1, 10)>"
+
+  post{31..60}:
+    parent: "@post<numberBetween(1, 30)>"
+    description: "<sentence(15)>"
+    published_at: '<dateTimeBetween("-200 days", "now")>'
+    author: "@user<numberBetween(1, 10)>"

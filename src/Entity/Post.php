@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\PostRepository;
 use DateTime;
 use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -24,7 +26,7 @@ class Post
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $title;
 
@@ -49,6 +51,29 @@ class Post
      * @ORM\JoinColumn(nullable=false)
      */
     private $author;
+
+    /**
+     * @var Post
+     *
+     * @ORM\ManyToOne(targetEntity=Post::class, inversedBy="posts")
+     */
+    private $parent;
+
+    /**
+     * @var Post[]
+     *
+     * @ORM\OneToMany(targetEntity=Post::class, mappedBy="parent")
+     */
+    private $posts;
+
+
+    /**
+     * Post constructor.
+     */
+    public function __construct()
+    {
+        $this->posts = new ArrayCollection();
+    }
 
 
     /**
@@ -116,14 +141,78 @@ class Post
         return $this;
     }
 
+    /**
+     * @return User|null
+     */
     public function getAuthor(): ?User
     {
         return $this->author;
     }
 
+    /**
+     * @param User|null $author
+     * @return $this
+     */
     public function setAuthor(?User $author): self
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * @return $this|null
+     */
+    public function getParent(): ?self
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @param Post|null $parent
+     * @return $this
+     */
+    public function setParent(?self $parent): self
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|self[]
+     */
+    public function getPosts(): Collection
+    {
+        return $this->posts;
+    }
+
+    /**
+     * @param Post $post
+     * @return $this
+     */
+    public function addPost(self $post): self
+    {
+        if (!$this->posts->contains($post)) {
+            $this->posts[] = $post;
+            $post->setParent($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Post $post
+     * @return $this
+     */
+    public function removePost(self $post): self
+    {
+        if ($this->posts->removeElement($post)) {
+            // set the owning side to null (unless already changed)
+            if ($post->getParent() === $this) {
+                $post->setParent(null);
+            }
+        }
 
         return $this;
     }
