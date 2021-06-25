@@ -16,6 +16,7 @@
                 {% for animal in animals %}
                     {% set sum = sum + animal.price %}
                     <li class="list-group-item">
+                        <a href="{{ path('remove_item', {'id': animal.id|nzo_encrypt, 'type': 'animal'}) }}" class="btn btn-danger">Remove</a>
                         {{ animal.name }}
                         <span style="float: right">{{ animal.price }} €</span>
                     </li>
@@ -26,6 +27,7 @@
                 {% for accessory in accessories %}
                     {% set sum = sum + accessory.price %}
                     <li class="list-group-item">
+                        <a href="{{ path('remove_item', {'id': accessory.id|nzo_encrypt, 'type': 'accessory'}) }}" class="btn btn-danger">Remove</a>
                         {{ accessory.name }}
                         <span style="float: right">{{ accessory.price }} €</span>
                     </li>

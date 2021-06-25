@@ -340,7 +340,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->animals->removeElement($animal)) {
             // set the owning side to null (unless already changed)
-            if ($animal->setOwner() === $this) {
+            if ($animal->getOwner() === $this) {
                 $animal->setOwner(null);
             }
         }
