@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Animal;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 
 /**
  * @method Animal|null find($id, $lockMode = null, $lockVersion = null)
@@ -28,6 +30,21 @@ class AnimalRepository extends ServiceEntityRepository
                     ->andWhere('a.adopted = 0')
                     ->andWhere("a.adopted_at IS NULL")
                     ->setMaxResults(8)
+                    ->getQuery()->getResult();
+    }
+
+    /**
+     * @return mixed
+     * @throws Exception
+     */
+    public function findByAdoptedPreviousMonth()
+    {
+        return $this->createQueryBuilder('a')
+                    ->andWhere('a.adopted = 1')
+                    ->andWhere("a.adopted_at > :startDate")
+                    ->andWhere("a.adopted_at < :endDate")
+                    ->setParameter(':endDate', new DateTime('last day of last month'))
+                    ->setParameter(':startDate', new DateTime('first day of last month'))
                     ->getQuery()->getResult();
     }
 

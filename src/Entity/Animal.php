@@ -83,6 +83,11 @@ class Animal
      */
     private $type;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="animals")
+     */
+    private $owner;
+
 
     /**
      * @return int|null
@@ -187,11 +192,18 @@ class Animal
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getBreed(): ?string
     {
         return $this->breed;
     }
 
+    /**
+     * @param string|null $breed
+     * @return $this
+     */
     public function setBreed(?string $breed): self
     {
         $this->breed = $breed;
@@ -199,11 +211,18 @@ class Animal
         return $this;
     }
 
+    /**
+     * @return bool|null
+     */
     public function getAdopted(): ?bool
     {
         return $this->adopted;
     }
 
+    /**
+     * @param bool $adopted
+     * @return $this
+     */
     public function setAdopted(bool $adopted): self
     {
         $this->adopted = $adopted;
@@ -211,11 +230,18 @@ class Animal
         return $this;
     }
 
+    /**
+     * @return DateTimeInterface|null
+     */
     public function getAdoptedAt(): ?DateTimeInterface
     {
         return $this->adopted_at;
     }
 
+    /**
+     * @param DateTimeInterface|null $adopted_at
+     * @return $this
+     */
     public function setAdoptedAt(?DateTimeInterface $adopted_at): self
     {
         $this->adopted_at = $adopted_at;
@@ -223,14 +249,40 @@ class Animal
         return $this;
     }
 
+    /**
+     * @return AnimalType|null
+     */
     public function getType(): ?AnimalType
     {
         return $this->type;
     }
 
+    /**
+     * @param AnimalType|null $type
+     * @return $this
+     */
     public function setType(?AnimalType $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return User|null
+     */
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    /**
+     * @param User|null $owner
+     * @return $this
+     */
+    public function setOwner(?User $owner): self
+    {
+        $this->owner = $owner;
 
         return $this;
     }

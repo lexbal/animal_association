@@ -24,8 +24,16 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  */
 class AnimalAccessoryController extends AbstractController
 {
+    /**
+     * @var Encryptor
+     */
     private $encryptor;
 
+
+    /**
+     * AnimalAccessoryController constructor.
+     * @param Encryptor $encryptor
+     */
     public function __construct(Encryptor $encryptor)
     {
         $this->encryptor = $encryptor;
@@ -105,26 +113,8 @@ class AnimalAccessoryController extends AbstractController
 
         return $this->json([
             'success'  => true,
-            'cart'     => count($user->getAnimalAccessories()),
+            'cart'     => $user->getCart(),
             'quantity' => $accessory->getQuantity(),
         ]);
-    }
-
-    /**
-     * @Route("/cart", name="animal_accessory_cart")
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
-     * @Template("cart/index.html.twig")
-     * @return array
-     */
-    public function cart(): array
-    {
-        /** @var User $user */
-        if (!$user = $this->getUser()) {
-            throw new AccessDeniedException("Access Denied !");
-        }
-
-        $accessories = $user->getAnimalAccessories();
-
-        return compact('accessories');
     }
 }

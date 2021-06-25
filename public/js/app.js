@@ -16,10 +16,15 @@ $(function() {
         }).then(function(response) {
             if (response.success) {
                 $(".left-nav .cart").empty().append(response.cart);
-                $(".card-body .quantity").empty().append(response.quantity);
-            }
 
-            _this.attr("disabled", true);
+                if (response.quantity) {
+                    $(".card-body .quantity").empty().append(response.quantity);
+
+                    _this.attr("disabled", true);
+                } else {
+                    _this.hide()
+                }
+            }
         });
     });
 });

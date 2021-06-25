@@ -3,7 +3,7 @@
 {% block title %}Animal Detail{% endblock %}
 
 {% block body %}
-<div class="row">
+    <div class="row">
         <div class="col-md-12 col-lg-12 col-sm-12">
             <div class="card">
                 <div class="card-header">
@@ -15,11 +15,11 @@
                             {{ animal.breed }} 
                         </li>
                         <li class="list-group-item">
-                        height : {{ animal.height}}<br>
-                        weight : {{ animal.weight}}<br>
-                        price : {{ animal.price}}<br>
-                        birthday : {{ animal.getBirthDate|date("m/d/Y", false) }}<br>
-                        age : {{"now"|date("Y")-animal.getBirthDate|date("Y", false)}}
+                            Height : {{ animal.height}}<br>
+                            Weight : {{ animal.weight}}<br>
+                            Price : {{ animal.price}}<br>
+                            Birthday : {{ animal.getBirthDate|date("m/d/Y", false) }}<br>
+                            Age : {{"now"|date("Y")-animal.getBirthDate|date("Y", false)}}
                         </li>
                     </ul>
                 </div>
@@ -27,4 +27,15 @@
         </div>
     </div>
 
+    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+        {% if animal.adopted == 0 and animal.adoptedAt is null %}
+            <button class="btn btn-primary"
+                    id="add-to-cart"
+                    data-href="{{ path('animal_add_to_cart') }}"
+                    data-id="{{animal.id|nzo_encrypt}}"
+            >
+                Add to cart
+            </button>
+        {% endif %}
+    {% endif %}
 {% endblock %}

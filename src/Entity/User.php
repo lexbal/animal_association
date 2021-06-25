@@ -67,15 +67,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $animalAccessories;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Animal::class, mappedBy="owner")
+     */
+    private $animals;
+
 
     /**
      * User constructor.
      */
     public function __construct()
     {
-        $this->donations = new ArrayCollection();
-        $this->posts = new ArrayCollection();
+        $this->donations         = new ArrayCollection();
+        $this->posts             = new ArrayCollection();
         $this->animalAccessories = new ArrayCollection();
+        $this->animals           = new ArrayCollection();
     }
 
     /**
@@ -193,6 +199,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->donations;
     }
 
+    /**
+     * @param Donation $donation
+     * @return $this
+     */
     public function addDonation(Donation $donation): self
     {
         if (!$this->donations->contains($donation)) {
@@ -203,6 +213,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @param Donation $donation
+     * @return $this
+     */
     public function removeDonation(Donation $donation): self
     {
         if ($this->donations->removeElement($donation)) {
@@ -223,6 +237,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->posts;
     }
 
+    /**
+     * @param Post $post
+     * @return $this
+     */
     public function addPost(Post $post): self
     {
         if (!$this->posts->contains($post)) {
@@ -233,6 +251,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @param Post $post
+     * @return $this
+     */
     public function removePost(Post $post): self
     {
         if ($this->posts->removeElement($post)) {
@@ -253,6 +275,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->animalAccessories;
     }
 
+    /**
+     * @param AnimalAccessory $animalAccessory
+     * @return $this
+     */
     public function addAnimalAccessory(AnimalAccessory $animalAccessory): self
     {
         if (!$this->animalAccessories->contains($animalAccessory)) {
@@ -262,10 +288,60 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @param AnimalAccessory $animalAccessory
+     * @return $this
+     */
     public function removeAnimalAccessory(AnimalAccessory $animalAccessory): self
     {
         $this->animalAccessories->removeElement($animalAccessory);
 
         return $this;
+    }
+
+    /**
+     * @return Collection|Animal[]
+     */
+    public function getAnimals(): Collection
+    {
+        return $this->animals;
+    }
+
+    /**
+     * @param Animal $animal
+     * @return $this
+     */
+    public function addAnimal(Animal $animal): self
+    {
+        if (!$this->animals->contains($animal)) {
+            $this->animals[] = $animal;
+            $animal->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Animal $animal
+     * @return $this
+     */
+    public function removeAnimal(Animal $animal): self
+    {
+        if ($this->animals->removeElement($animal)) {
+            // set the owning side to null (unless already changed)
+            if ($animal->setOwner() === $this) {
+                $animal->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCart(): int
+    {
+        return count($this->getAnimalAccessories()) + count($this->getAnimals());
     }
 }
