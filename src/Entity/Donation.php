@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=DonationRepository::class)
@@ -28,6 +29,10 @@ class Donation
     /**
      * @var float
      *
+     * @Assert\NotBlank
+     * @Assert\GreaterThan(
+     *     value = 0
+     * )
      * @ORM\Column(type="float")
      */
     private $amount;
