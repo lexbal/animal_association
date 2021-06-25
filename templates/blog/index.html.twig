@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Blog{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12 col-lg-12 col-sm-12">
+            <h3>Posts :</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for post in posts %}
+            <ul class="list-group" style="margin-bottom: 15px">
+                <li class="list-group-item">
+                    <div class="card">
+                        <div class="card-header">
+                            {{ post.title }}
+                        </div>
+                        <div class="card-body">
+                            {{ post.description }}
+                        </div>
+                        <div class="card-footer">
+                            Published at : {{ post.publishedAt|date('d/m/Y') }} by {{ post.author }}
+                        </div>
+                    </div>
+                </li>
+                {% if post.posts is not empty %}
+                    <li class="list-group-item" style="background-color: rgba(0,0,0,.03);">
+                        <ul class="list-group" style="margin-bottom: 15px">
+                            <li class="list-group-item">
+                                <h5>Comments :</h5>
+                            </li>
+                            {% for comment in post.posts %}
+                                <li class="list-group-item">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            {{ comment.author }}
+                                        </div>
+                                        <div class="card-body">
+                                            {{ comment.description }}<br><br>
+
+                                            Published at : {{ comment.publishedAt|date('d/m/Y') }}
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endif %}
+            </ul>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -344,4 +344,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return count($this->getAnimalAccessories()) + count($this->getAnimals());
     }
+
+    /**
+     * @return string|null
+     */
+    public function __toString()
+    {
+        return $this->getEmail();
+    }
 }
